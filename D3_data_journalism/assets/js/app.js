@@ -42,9 +42,9 @@ d3.csv("../assets/data/data.csv", function(data) {
       .attr("class", function(d) { return "bubbles " + d.poverty })
       .attr("cx", function (d) { return x(d.age); } )
       .attr("cy", function (d) { return y(d.income); } )
-      .attr("r", function (d) { return z(d.obesity); } )
+      //.attr("r", function (d) { return z(d.obesity); } )
       //.style("fill", function (d) { return myColor(d.poverty); } )
-      .attr("r", 1.5)
+      .attr("r", 2.5)
       .style("fill", "#69b3a2")
 
 })
