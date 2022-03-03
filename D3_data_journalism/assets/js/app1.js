@@ -87,6 +87,7 @@ d3.csv("./assets/data/data.csv").then( function(data) {
     .range([ 0, width-120]);
   svg.append("g")
     .attr("transform", "translate(0," + height + ")")
+    .attr("class", "x_axislabels")
     .call(d3.axisBottom(x));
 
   // Add Y axis
@@ -94,6 +95,7 @@ d3.csv("./assets/data/data.csv").then( function(data) {
     .domain([30000, 82000])
     .range([ height, 0]);
   svg.append("g")
+    .attr("class", "y_axislabels")
     .call(d3.axisLeft(y));
 
   // Add a scale for bubble size
@@ -177,10 +179,11 @@ d3.csv("./assets/data/data.csv").then( function(data) {
 
 
 
- // @@@****** Extra labels starts
+ // @@@****** Extra x labels starts
 
 // Create group for two x-axis labels
 var labelsGroup = svg.append("g")
+.attr("class", "x_optionlabels")
 .attr("transform", `translate(${width / 2}, ${height + 10})`);
 
 var povertyLabel = labelsGroup.append("text")
@@ -198,7 +201,7 @@ var ageLabel = labelsGroup.append("text")
 .text("Age");
 
 // append y axis
-chartGroup.append("text")
+circlesGroup.append("text")
 .attr("transform", "rotate(-90)")
 .attr("y", 0 - margin.left)
 .attr("x", 0 - (height / 2))
@@ -210,10 +213,11 @@ chartGroup.append("text")
 var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
 // x axis labels event listener
-labelsGroup.selectAll("text")
+labelsGroup.select("text")
 .on("click", function() {
   // get value of selection
   var value = d3.select(this).attr("value");
+  console.log(value)
   if (value !== chosenXAxis) {
     // replaces chosenXAxis with value
     chosenXAxis = value;
