@@ -26,18 +26,21 @@ d3.csv("./assets/data/data.csv").then( function(data) {
    console.log(key,value)});
 
   // Add X axis
-    var chosenXAxis = "age"  //default x axis
-    var x = d3.scaleLinear()
+  function XAxis(chosenXAxis) {
+  var x = d3.scaleLinear()
     .domain([d3.min(data, d => d[chosenXAxis]) * 0.8,
              d3.max(data, d => d[chosenXAxis]) * 1.2])
     .range([ 0, width]);
-    svg.append("g")
+   svg.append("g")
      .attr("transform", "translate(0," + height + ")")
      .attr("class", "x_axislabels")
      .call(d3.axisBottom(x));
+    };
+   var chosenXAxis = "age"  //default x axis
+   XAxis(chosenXAxis)
 
   // Add Y axis
-  var chosenYAxis = "income"  //default y axis
+   function YAxis(chosenYAxis) {
   var y = d3.scaleLinear()
     .domain([d3.min(data, d => d[chosenYAxis]) * 0.8,
            d3.max(data, d => d[chosenYAxis]) * 1.2])
@@ -45,6 +48,9 @@ d3.csv("./assets/data/data.csv").then( function(data) {
   svg.append("g")
     .attr("class", "y_axislabels")
     .call(d3.axisLeft(y));
+  };
+  var chosenYAxis = "income"  //default y axis
+  YAxis(chosenYAxis)
 
   // Add a scale for bubble size
   const z = d3.scaleLinear()
@@ -56,7 +62,7 @@ d3.csv("./assets/data/data.csv").then( function(data) {
     //.domain(["AL", "AK", "AR", "CA", "CO", "CT"])
     .range(d3.schemeSet2);
 
-   // -1- Create a tooltip div that is hidden by default:
+  // -1- Create a tooltip div that is hidden by default:
    const tooltip = d3.select("#scatter")
    .append("div")
      .style("opacity", 0)
@@ -90,9 +96,8 @@ d3.csv("./assets/data/data.csv").then( function(data) {
  }
 
   // Add dots
- var chosenXAxis = "age"  //default x dots
- var chosenYAxis = "income" //default y dots
-  var circlesGroup = svg.append('g')
+ function circlesGroup(chosenXAxis,chosenYAxis) {
+  svg.append('g')
     .attr("class", "node_wrapper")
     .selectAll("dot")
     .data(data)
@@ -107,16 +112,20 @@ d3.csv("./assets/data/data.csv").then( function(data) {
       // -3- Trigger the functions
     .on("mouseover", showTooltip )
     .on("mousemove", moveTooltip )
-    .on("mouseleave", hideTooltip )
+    .on("mouseleave", hideTooltip ) 
     
-  d3.selectAll(".bubble_wrapper")
+    d3.selectAll(".bubble_wrapper")
     .data(data)
     .append("text").text(d => d.abbr)
     .attr("text-anchor", "middle")
     .attr("x", d => x(d[chosenXAxis]))
     .attr("y", d => y(d[chosenYAxis]))
-      
-
+  };
+  var chosenXAxis = "age"  //default x dots
+  var chosenYAxis = "income" //default y dots
+  console.log(chosenXAxis)    
+  console.log(chosenYAxis) 
+  circlesGroup(chosenXAxis,chosenYAxis);
 
 // @@@ Extra y labels starts
 var ylabelsGroup = svg.append("g")
@@ -239,29 +248,32 @@ d3.selectAll("text.ylabels.inactive")
   console.log("chosen Axis:");
   console.log(chosenXAxis);
   console.log(chosenYAxis);
-  var circlesGroup = svg.append('g')
-    .attr("class", "node_wrapper")
-    .selectAll("dot")
-    .data(data)
-    .join("g")
-    .attr("class", "bubble_wrapper")
-    .append("circle")
-      .attr("class", "bubbles")
-      .attr("cx", d => x(d[chosenXAxis]))
-      .attr("cy", d => y(d[chosenYAxis]))
-      .attr("r", d => z(d.obesity))
-      .style("fill", d => myColor(d.abbr)) 
-      // -3- Trigger the functions
-    .on("mouseover", showTooltip )
-    .on("mousemove", moveTooltip )
-    .on("mouseleave", hideTooltip )
+
+  circlesGroup("chosenXAxis","chosenYAxis");
+
+  // var circlesGroup = svg.append('g')
+  //   .attr("class", "node_wrapper")
+  //   .selectAll("dot")
+  //   .data(data)
+  //   .join("g")
+  //   .attr("class", "bubble_wrapper")
+  //   .append("circle")
+  //     .attr("class", "bubbles")
+  //     .attr("cx", d => x(d[chosenXAxis]))
+  //     .attr("cy", d => y(d[chosenYAxis]))
+  //     .attr("r", d => z(d.obesity))
+  //     .style("fill", d => myColor(d.abbr)) 
+  //     // -3- Trigger the functions
+  //   .on("mouseover", showTooltip )
+  //   .on("mousemove", moveTooltip )
+  //   .on("mouseleave", hideTooltip )
     
-  d3.selectAll(".bubble_wrapper")
-    .data(data)
-    .append("text").text(d => d.abbr)
-    .attr("text-anchor", "middle")
-    .attr("x", d => x(d[chosenXAxis]))
-    .attr("y", d => y(d[chosenYAxis]))
+  // d3.selectAll(".bubble_wrapper")
+  //   .data(data)
+  //   .append("text").text(d => d.abbr)
+  //   .attr("text-anchor", "middle")
+  //   .attr("x", d => x(d[chosenXAxis]))
+  //   .attr("y", d => y(d[chosenYAxis]))
 
   })
 
@@ -326,30 +338,32 @@ d3.selectAll("text.xlabels.inactive")
       .attr("class", "x_axislabels")
       .call(d3.axisBottom(x));
 
-      var circlesGroup = svg.append('g')
-      .attr("class", "node_wrapper")
-      .selectAll("dot")
-      .data(data)
-      .join("g")
-      .attr("class", "bubble_wrapper")
-      .append("circle")
-        .attr("class", "bubbles")
-        .attr("cx", d => x(d[chosenXAxis]))
-        .attr("cy", d =>y(d[chosenYAxis]))
-        .attr("r", d => z(d.obesity))
-        .style("fill", d => myColor(d.abbr)) 
-        // -3- Trigger the functions
-      .on("mouseover", showTooltip )
-      .on("mousemove", moveTooltip )
-      .on("mouseleave", hideTooltip )
+    circlesGroup("chosenXAxis","chosenYAxis");
 
-      d3.selectAll(".bubble_wrapper")
-      .data(data)
-      .append("text").text(d => d.abbr)
-      .attr("text-anchor", "middle")
-      .attr("x", d => x(d[chosenXAxis]))
-      .attr("y", d => y(d[chosenYAxis]))
-  })
+  //     var circlesGroup = svg.append('g')
+  //     .attr("class", "node_wrapper")
+  //     .selectAll("dot")
+  //     .data(data)
+  //     .join("g")
+  //     .attr("class", "bubble_wrapper")
+  //     .append("circle")
+  //       .attr("class", "bubbles")
+  //       .attr("cx", d => x(d[chosenXAxis]))
+  //       .attr("cy", d =>y(d[chosenYAxis]))
+  //       .attr("r", d => z(d.obesity))
+  //       .style("fill", d => myColor(d.abbr)) 
+  //       // -3- Trigger the functions
+  //     .on("mouseover", showTooltip )
+  //     .on("mousemove", moveTooltip )
+  //     .on("mouseleave", hideTooltip )
+
+  //     d3.selectAll(".bubble_wrapper")
+  //     .data(data)
+  //     .append("text").text(d => d.abbr)
+  //     .attr("text-anchor", "middle")
+  //     .attr("x", d => x(d[chosenXAxis]))
+  //     .attr("y", d => y(d[chosenYAxis]))
+  });
 
 // $$$ X AXIS Event listener back to active AGE or default x-axis $$$
   d3.select("text.xlabels.active")
@@ -389,29 +403,31 @@ d3.selectAll("text.xlabels.inactive")
       .attr("class", "x_axislabels")
       .call(d3.axisBottom(x));
 
-    var circlesGroup = svg.append('g')
-      .attr("class", "node_wrapper")
-      .selectAll("dot")
-      .data(data)
-      .join("g")
-      .attr("class", "bubble_wrapper")
-      .append("circle")
-        .attr("class", "bubbles")
-        .attr("cx", d => x(d[chosenXAxis]))
-        .attr("cy", d => y(d[chosenYAxis]))
-        .attr("r", d => z(d.obesity))
-        .style("fill", d => myColor(d.abbr)) 
-        // -3- Trigger the functions
-      .on("mouseover", showTooltip )
-      .on("mousemove", moveTooltip )
-      .on("mouseleave", hideTooltip )
+    circlesGroup("chosenXAxis","chosenYAxis");
 
-    d3.selectAll(".bubble_wrapper")
-      .data(data)
-      .append("text").text(d => d.abbr)
-      .attr("text-anchor", "middle")
-      .attr("x", d => x(d[chosenXAxis]))
-      .attr("y", d => y(d[chosenYAxis]))
+    // var circlesGroup = svg.append('g')
+    //   .attr("class", "node_wrapper")
+    //   .selectAll("dot")
+    //   .data(data)
+    //   .join("g")
+    //   .attr("class", "bubble_wrapper")
+    //   .append("circle")
+    //     .attr("class", "bubbles")
+    //     .attr("cx", d => x(d[chosenXAxis]))
+    //     .attr("cy", d => y(d[chosenYAxis]))
+    //     .attr("r", d => z(d.obesity))
+    //     .style("fill", d => myColor(d.abbr)) 
+    //     // -3- Trigger the functions
+    //   .on("mouseover", showTooltip )
+    //   .on("mousemove", moveTooltip )
+    //   .on("mouseleave", hideTooltip )
+
+    // d3.selectAll(".bubble_wrapper")
+    //   .data(data)
+    //   .append("text").text(d => d.abbr)
+    //   .attr("text-anchor", "middle")
+    //   .attr("x", d => x(d[chosenXAxis]))
+    //   .attr("y", d => y(d[chosenYAxis]))
     })
 
 // ****** Extra labels end *******
