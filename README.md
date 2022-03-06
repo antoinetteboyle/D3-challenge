@@ -4,17 +4,11 @@ Visualisation analysing the health risks facing particular demographics from the
 The main code is found in a folder named [D3_data_journalism]("./D3_data_journalism"). The graphic in the [app.js](./assets/js/app.js) file which pulls in the data from [data.csv](./assets/data/data.csv) using the "d3.csv".
 
 I created a scatter plot:
-- between two of the data variables Income, Age, Obesity!( or such as `Healthcare vs. Poverty` or `Smokers vs. Age`)- representing each state with circle elements and depicting state abbreviations in the circles.
+- between two of the data variables y-axis: Income, Smokes, Obesity (x-axis: Age, Poverty, Healthcare)- representing each state with circle elements and depicting state abbreviations in the circles.
 - situated axes and labels to the left and bottom of the chart.
 
-I used `python -m http.server` to run the visualisation. This will host the page at `localhost:8000` in your web browser.
+`python -m http.server` can be used to run the visualisation hosting the page at `localhost:8000` in the web browser. The visualisation has been deployed to Github pages.
 
-# 1. More Data, More Dynamics
+Additional labels in the scatter plot have click events so that users can decide which data to display. Animated the transitions for the circles' locations as well as the range of axes. Created three risk factors for each axis.
 
-Additional labels in your scatter plot and give them click events so that your users can decide which data to display. Animate the transitions for your circles' locations as well as the range of your axes. Do this for two risk factors for each axis. Or, for an extreme challenge, create three for each axis.
-
-* Hint: Try binding all of the CSV data to your circles. This will let you easily determine their x or y values when you click the labels.
-
-# 2. Incorporate d3-tip
-
-While the ticks on the axes allow us to infer approximate values for each circle, it's impossible to determine the true value without adding another layer of data. Enter tooltips: developers can implement these in their D3 graphics to reveal a specific element's data when the user hovers their cursor over the element. Add tooltips to your circles and display each tooltip with the data that the user has selected. Use the `d3-tip.js` plugin developed by [Justin Palmer](https://github.com/Caged)—we've already included this plugin in your assignment directory.
+While the ticks on the axes allow us to infer approximate values for each circle, it's impossible to determine the true value without adding another layer of data. Tooltips reveal a specific element's data when the user hovers their cursor over the element. Tooltips are added to circles and displays each tooltip with the data.

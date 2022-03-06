@@ -25,12 +25,12 @@ d3.csv("./assets/data/data.csv").then( function(data) {
    Object.entries(data).forEach(([key, value]) => {
    console.log(key,value)});
 
-   var chosenXAxis ="age"   
-   var chosenYAxis ="income"
+   var chosenXAxis ="age"   //default
+   var chosenYAxis ="income" //default
   // Add X axis
   var x = d3.scaleLinear()
-    .domain([d3.min(data, d => d[chosenXAxis]) * 0.8,
-             d3.max(data, d => d[chosenXAxis]) * 1.2])
+    .domain([d3.min(data, d => d[chosenXAxis]) * 0.97,
+             d3.max(data, d => d[chosenXAxis]) * 1.02])
     .range([ 0, width]);
    svg.append("g")
      .attr("transform", "translate(0," + height + ")")
@@ -39,8 +39,8 @@ d3.csv("./assets/data/data.csv").then( function(data) {
 
   // Add Y axis
   var y = d3.scaleLinear()
-    .domain([d3.min(data, d => d[chosenYAxis]) * 0.8,
-           d3.max(data, d => d[chosenYAxis]) * 1.2])
+    .domain([d3.min(data, d => d[chosenYAxis]) * 0.94,
+           d3.max(data, d => d[chosenYAxis]) * 1.05])
     .range([height, 0]);
   svg.append("g")
     .attr("class", "y_axislabels")
@@ -90,8 +90,6 @@ d3.csv("./assets/data/data.csv").then( function(data) {
  }
 
   // Add dots
-   var chosenXAxis ="age"   
-   var chosenYAxis ="income"
    var circlesGroup = svg.append('g')
     .attr("class", "node_wrapper")
     .selectAll("dot")
@@ -117,7 +115,7 @@ d3.csv("./assets/data/data.csv").then( function(data) {
     .attr("y", d => y(d[chosenYAxis]))
  
 
-// @@@ Extra y labels starts
+// Create Extra y-axis click labels
 var ylabelsGroup = svg.append("g")
 .attr("class", "y_options")
 .attr("transform", `translate(${width-width-95}, ${height - 250})`);
@@ -148,7 +146,7 @@ var obesityLabel = ylabelsGroup.append("text")
 .classed("inactive", true)
 .text("Obesity");
 
-// @@@ Extra x labels starts
+// Create Extra x-axis click labels
 var xlabelsGroup = svg.append("g")
 .attr("class", "x_options")
 .attr("transform", `translate(${width / 2}, ${height + 10})`);
@@ -177,46 +175,58 @@ var healthLabel = xlabelsGroup.append("text")
 .classed("inactive", true)
 .text("Healthcare");
 
-// $$$ Y AXIS Event listener INCOME/SMOKE/OBESITY $$$
-d3.selectAll("text.ylabels.inactive")
+// $$$ Y AXIS Event listener INCOME/SMOKE/OBESITY Click $$$
+d3.selectAll("text.ylabels")
   .on("click", function() {
   var value = d3.select(this).attr("value");
   var chosenYAxis = value;
+  d3.select(this).classed("active", true);
+  d3.select(this).classed("inactive", false);
   
-  console.log("Y Value clicked");
-  console.log(value);
   console.log("Values currently selected");
   console.log(chosenXAxis);
   console.log(chosenYAxis);
 
-  d3.selectAll("g.x_axislabels").remove();   //.html("");
-  d3.selectAll("g.y_axislabels").remove();   //.html("");
-  d3.selectAll("g.node_wrapper").remove();   //.html("");
+  d3.selectAll("g.x_axislabels").remove();
+  d3.selectAll("g.y_axislabels").remove(); 
+  d3.selectAll("g.node_wrapper").remove().transition().duration(9000);
 
-  //Add X axis
+  if (chosenXAxis === "poverty") {
+    var xmin = 8
+    var xmax = 24}
+  if (chosenXAxis === "healthcare") {
+      var xmin = 3
+      var xmax = 28}
+  if (chosenXAxis === "age") {
+      var xmin = 28
+      var xmax = 48}
+
   var x = d3.scaleLinear()
-    .domain([d3.min(data,d=>d[chosenXAxis]),
-             d3.max(data,d=>d[chosenXAxis])])
+    .domain([xmin,xmax])   
     .range([ 0, width]);
    svg.append("g")
      .attr("transform", "translate(0," + height + ")")
      .attr("class", "x_axislabels")
      .call(d3.axisBottom(x));
 
-   // Add Y axis
-  chosenYAxis = value
+  if (chosenYAxis === "income") {
+      var ymin = 35000
+      var ymax = 75000}
+  if (chosenYAxis === "smokes") {
+        var ymin = 9
+        var ymax = 28}
+  if (chosenYAxis === "obesity") {
+          var ymin = 20
+          var ymax = 40}
+
   var y = d3.scaleLinear()
-    .domain([d3.min(data, d => d[chosenYAxis]),
-             d3.max(data, d => d[chosenYAxis])])
+    .domain([ymin,ymax])   
     .range([height, 0]);
   svg.append("g")
+    .transition()
+    .duration(600)
     .attr("class", "y_axislabels")
     .call(d3.axisLeft(y));
-    
-  //var chosenXAxis = "age"  //default x axis
-  console.log("chosen Axis:");
-  console.log(chosenXAxis);
-  console.log(chosenYAxis);
 
   var circlesGroup = svg.append('g')
     .attr("class", "node_wrapper")
@@ -234,196 +244,131 @@ d3.selectAll("text.ylabels.inactive")
     .on("mouseover", showTooltip )
     .on("mousemove", moveTooltip )
     .on("mouseleave", hideTooltip )
-    
-  d3.selectAll(".bubble_wrapper")
+    d3.selectAll(".bubble_wrapper")
     .data(data)
     .append("text").text(d => d.abbr)
     .attr("text-anchor", "middle")
     .attr("x", d => x(d[chosenXAxis]))
     .attr("y", d => y(d[chosenYAxis]))
+    .transition()
+    .duration(4000)
 
-     // changes option classes to change bold text
-  if (chosenXAxis === "income") {
-    incomeLabel
-      .classed("active", true)
-      .classed("inactive", false);
-    smokeLabel
-      .classed("active", false)
-      .classed("inactive", true);
-    obesityLabel
+  // Unselected option classes to change bold text off
+    if (chosenYAxis !== "income") {
+      incomeLabel
       .classed("active", false)
       .classed("inactive", true);}
-if (chosenXAxis === "smokes") {
-    incomeLabel
+    if (chosenYAxis !== "obesity") {
+      obesityLabel
       .classed("active", false)
-      .classed("inactive", true);
-    smokeLabel
-      .classed("active", true)
-      .classed("inactive", false);
-    obesityLabel
-      .classed("active", false)
-      .classed("inactive", true);} 
-if (chosenXAxis === "obesity") {
-     incomeLabel
-      .classed("active", false)
-      .classed("inactive", true);
-     smokeLabel
-      .classed("active", false)
-      .classed("inactive", true);
-     obesityLabel
-      .classed("active", true)
-      .classed("inactive", false);}
+      .classed("inactive", true);}
+    if (chosenYAxis !== "smokes") {
+       smokeLabel
+       .classed("active", false)
+       .classed("inactive", true);}
 
   })
 
-// $$$ X AXIS Event listener AGE/POVERTY/HEALTHCARE x-axis $$$
-
-d3.selectAll("text.xlabels.inactive")
+// $$$ X AXIS Event listener AGE/POVERTY/HEALTHCARE Click $$$
+d3.selectAll("text.xlabels")
   .on("click", function() {
   var value = d3.select(this).attr("value");
   chosenXAxis = value;
+  chosenYAxis = d3.select("text.ylabels.active").attr("value");
+  d3.select(this).classed("active", true);
+  d3.select(this).classed("inactive", false);
 
-  console.log("X Value clicked");
-  console.log(value);
   console.log("Values currently selected");
   console.log(chosenXAxis);
   console.log(chosenYAxis);
 
-  d3.selectAll("g.x_axislabels").remove();   //.html("");
-  d3.selectAll("g.node_wrapper").remove();   //.html("");
+  d3.selectAll("g.x_axislabels").remove(); 
+  d3.selectAll("g.y_axislabels").remove(); 
+  d3.selectAll("g.node_wrapper").remove().transition().duration(9000);
 
-   // changes option classes to change bold text
   if (chosenXAxis === "poverty") {
-      ageLabel
-        .classed("active", false)
-        .classed("inactive", true);
-      povertyLabel
-        .classed("active", true)
-        .classed("inactive", false);
-      healthLabel
-        .classed("active", false)
-        .classed("inactive", true);
-  }
+    var xmin = 8
+    var xmax = 24}
   if (chosenXAxis === "healthcare") {
-    ageLabel
-      .classed("active", false)
-      .classed("inactive", true);
-    povertyLabel
-      .classed("active", false)
-      .classed("inactive", true);
-    healthLabel
-      .classed("active", true)
-      .classed("inactive", false);
-  }
+      var xmin = 3
+      var xmax = 28}
   if (chosenXAxis === "age") {
-    ageLabel
-      .classed("active", true)
-      .classed("inactive", false);
-    povertyLabel
-      .classed("active", false)
-      .classed("inactive", true);
-    healthLabel
-      .classed("active", false)
-      .classed("inactive", true);
+       var xmin = 28
+       var xmax = 48}
+
+  //update x-Axis
+  var x = d3.scaleLinear()
+  .domain([xmin,xmax])
+  .range([ 0, width-120]);
+  svg.append("g")
+   .transition()
+   .duration(400)
+   .attr("transform", "translate(0," + height + ")")
+   .attr("class", "x_axislabels")
+   .call(d3.axisBottom(x));
+
+   if (chosenYAxis === "income") {
+    var ymin = 35000
+    var ymax = 75000}
+  if (chosenYAxis === "smokes") {
+      var ymin = 9
+      var ymax = 28}
+  if (chosenYAxis === "obesity") {
+        var ymin = 20
+        var ymax = 40}
+
+  var y = d3.scaleLinear()
+    .domain([ymin,ymax])   
+    .range([height, 0]);
+  svg.append("g")
+    .attr("class", "y_axislabels")
+    .call(d3.axisLeft(y));
+
+   var circlesGroup = svg.append('g')
+   .attr("class", "node_wrapper")
+   .selectAll("dot")
+   .data(data)
+   .join("g")
+   .attr("class", "bubble_wrapper")
+   .append("circle")
+     .attr("class", "bubbles")
+     .attr("cx", d => x(d[chosenXAxis]))
+     .attr("cy", d =>y(d[chosenYAxis]))
+     .attr("r", d => z(d.obesity))
+     .style("fill", d => myColor(d.abbr)) 
+     // -3- Trigger tooltip functions
+   .on("mouseover", showTooltip )
+   .on("mousemove", moveTooltip )
+   .on("mouseleave", hideTooltip )
+
+   d3.selectAll(".bubble_wrapper")
+   .data(data)
+   .append("text").text(d => d.abbr)
+   .attr("text-anchor", "middle")
+   .attr("x", d => x(d[chosenXAxis]))
+   .attr("y", d => y(d[chosenYAxis]))
+   .transition()
+   .duration(9000)
+
+   // unselected option classes to change bold text off
+  if (chosenXAxis !== "poverty") {
+      povertyLabel
+       .classed("active", false)
+       .classed("inactive", true);
+  }
+  if (chosenXAxis !== "healthcare") {
+      healthLabel
+       .classed("active", false)
+       .classed("inactive", true);
+  }
+  if (chosenXAxis !== "age") {
+      ageLabel
+       .classed("active", false)
+       .classed("inactive", true);
   }
 
-   //update x-Axis
-   var x = d3.scaleLinear()
-     .domain([d3.min(data, d => d[chosenXAxis]) * 0.34,
-              d3.max(data, d => d[chosenXAxis]) * 2.8])
-     .range([ 0, width-120]);
-     svg.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .attr("class", "x_axislabels")
-      .call(d3.axisBottom(x));
-
-      var circlesGroup = svg.append('g')
-      .attr("class", "node_wrapper")
-      .selectAll("dot")
-      .data(data)
-      .join("g")
-      .attr("class", "bubble_wrapper")
-      .append("circle")
-        .attr("class", "bubbles")
-        .attr("cx", d => x(d[chosenXAxis]))
-        .attr("cy", d =>y(d[chosenYAxis]))
-        .attr("r", d => z(d.obesity))
-        .style("fill", d => myColor(d.abbr)) 
-        // -3- Trigger the functions
-      .on("mouseover", showTooltip )
-      .on("mousemove", moveTooltip )
-      .on("mouseleave", hideTooltip )
-
-      d3.selectAll(".bubble_wrapper")
-      .data(data)
-      .append("text").text(d => d.abbr)
-      .attr("text-anchor", "middle")
-      .attr("x", d => x(d[chosenXAxis]))
-      .attr("y", d => y(d[chosenYAxis]))
   });
 
-// $$$ X AXIS Event listener back to active AGE or default x-axis $$$
-  d3.select("text.xlabels.active")
-     .on("click", function() {
-  var value = d3.select(this).attr("value");
-      console.log("age choosen again")
-  chosenXAxis = value
-
-  console.log("X Value clicked");
-  console.log(value);
-  console.log("Values currently selected");
-  console.log(chosenXAxis);
-  console.log(chosenYAxis);
-    
-  d3.selectAll("g.x_axislabels").remove();   //.html("");
-  d3.selectAll("g.node_wrapper").remove();   //.html("");
-  // changes option classes to change bold text
-    if (chosenXAxis === "age") {
-      ageLabel
-        .classed("active", true)
-        .classed("inactive", false);
-      povertyLabel
-        .classed("active", false)
-        .classed("inactive", true);
-      healthLabel
-        .classed("active", false)
-        .classed("inactive", true);
-     }
-  //Update x-Axis
-   chosenXAxis = "age"
-   var x = d3.scaleLinear()
-     .domain([d3.min(data, d => d[chosenXAxis]) * 0.8,
-              d3.max(data, d => d[chosenXAxis]) * 1.2])
-     .range([ 0, width-120]);
-    svg.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .attr("class", "x_axislabels")
-      .call(d3.axisBottom(x));
-
-    var circlesGroup = svg.append('g')
-      .attr("class", "node_wrapper")
-      .selectAll("dot")
-      .data(data)
-      .join("g")
-      .attr("class", "bubble_wrapper")
-      .append("circle")
-        .attr("class", "bubbles")
-        .attr("cx", d => x(d[chosenXAxis]))
-        .attr("cy", d => y(d[chosenYAxis]))
-        .attr("r", d => z(d.obesity))
-        .style("fill", d => myColor(d.abbr)) 
-        // -3- Trigger the functions
-      .on("mouseover", showTooltip )
-      .on("mousemove", moveTooltip )
-      .on("mouseleave", hideTooltip )
-
-    d3.selectAll(".bubble_wrapper")
-      .data(data)
-      .append("text").text(d => d.abbr)
-      .attr("text-anchor", "middle")
-      .attr("x", d => x(d[chosenXAxis]))
-      .attr("y", d => y(d[chosenYAxis]))
-    })
 
 // ****** Extra labels end *******
 
