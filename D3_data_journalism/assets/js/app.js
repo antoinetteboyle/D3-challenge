@@ -67,13 +67,15 @@ d3.csv("./assets/data/data.csv").then( function(data) {
      .style("color", "white")
 
  // -2- Create 3 functions to show / update (when mouse move but stay on same circle) / hide the tooltip
+
  const showTooltip = function(event, d) {
    tooltip
      .transition()
      .duration(200)
+   chosenYAxis = d3.select("text.ylabels.active").attr("value");
    tooltip
      .style("opacity", 1)
-     .html("State: " + d.state + ", Income: " + d.income + ", Age: " + d.age + ", Poverty " + d.poverty + ", Smokes " + d.smokes + ", Healthcare " + d.healthcare +", Obesity: " + d.obesity)
+     .html(`${d.state}<br>${chosenXAxis.toUpperCase()}: ${d[chosenXAxis]}<br>${chosenYAxis.toUpperCase()}: ${d[chosenYAxis]}`)
      .style("left", (event.x)/2 + "px")
      .style("top", (event.y)/2+30 + "px")
  }
@@ -182,7 +184,7 @@ d3.selectAll("text.ylabels")
   var chosenYAxis = value;
   d3.select(this).classed("active", true);
   d3.select(this).classed("inactive", false);
-  
+
   console.log("Values currently selected");
   console.log(chosenXAxis);
   console.log(chosenYAxis);
