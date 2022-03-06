@@ -48,7 +48,7 @@ d3.csv("./assets/data/data.csv").then( function(data) {
 
   // Add a scale for bubble size
   const z = d3.scaleLinear()
-  .domain([83, 100])
+  .domain([84, 100])
   .range([81, 100]);
 
   // Add a scale for bubble color
