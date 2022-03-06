@@ -53,7 +53,6 @@ d3.csv("./assets/data/data.csv").then( function(data) {
 
   // Add a scale for bubble color
   const myColor = d3.scaleOrdinal()
-    //.domain(["AL", "AK", "AR", "CA", "CO", "CT"])
     .range(d3.schemeSet2);
 
   // -1- Create a tooltip div that is hidden by default:
