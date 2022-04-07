@@ -14,8 +14,10 @@ Additional labels in the scatter plot have click events so that users can decide
 
 While the ticks on the axes allow us to infer approximate values for each circle, it's impossible to determine the true value without adding another layer of data. Tooltips reveal a specific element's data when the user hovers their cursor over the element. Tooltips are added to circles and displays each tooltip with the data.
 
-[Final Website Images 1](./images/WebPageScreenshot1.png)
-[Final Website Images 2](./images/WebPageScreenshot2.png)
-[Final Website Images 3](./images/WebPageScreenshot3.png)
+![Final Website Images 1](./images/WebPageScreenshot1.png)
+
+![Final Website Images 2](./images/WebPageScreenshot2.png)
+
+![Final Website Images 3](./images/WebPageScreenshot3.png)
 
 `python -m http.server` can be used to run the visualisation hosting the page at `localhost:8000` in the web browser. The visualisation has been deployed to Github pages.
